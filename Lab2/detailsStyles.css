@@ -1,0 +1,50 @@
+.container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.shirt-details {
+    display: flex;
+    justify-content: space-between;
+}
+
+.shirt-image img {
+    max-width: 300px;
+    border-radius: 8px;
+}
+
+.shirt-info {
+    max-width: 600px;
+}
+
+.shirt-controls {
+    margin-top: 20px;
+}
+
+.side-btn, .color-btn {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.side-btn {
+    background-color: #222;
+    color: #fff;
+}
+
+.color-btn {
+    width: 80px;
+    height: 50px;
+    border-radius:15%;
+    color: #000;
+}
+
+.color-btn-active {
+    border: 3px solid #333;
+}
