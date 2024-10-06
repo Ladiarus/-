@@ -13,9 +13,13 @@ const colorButtonsEl = document.getElementById('color-buttons');
 
 // Установка начальных значений
 shirtNameEl.textContent = selectedShirt.name;
-shirtImageEl.src = selectedShirt.default.front;  
+console.log(shirtNameEl.textContent);
+shirtImageEl.src = selectedShirt.colors[Object.keys(selectedShirt.colors)[0]].front;
+  console.log(selectedShirt.default.front);
 shirtPriceEl.textContent = selectedShirt.price;
+console.log(shirtPriceEl.textContent);
 shirtDescriptionEl.textContent = selectedShirt.description;
+console.log(shirtDescriptionEl.textContent);
 
 // Генерация кнопок для смены цвета
 Object.keys(selectedShirt.colors).forEach(color => {
