@@ -1,62 +1,63 @@
-// Переменные для отслеживания состояний
-let draggedElement = null; // Элемент, который перетаскивается
-let initialPosition = null; // Начальная позиция элемента
-let isSticky = false; // "Приклеенный" ли элемент к мыши
+document.querySelectorAll('.target').forEach(target => {
+    const colors = [
+        'yellow', 'red', 'blue', 'green', 'orange',
+        'purple', 'pink', 'cyan', 'magenta', 'lime',
+        'brown', 'teal', 'navy', 'gold', 'silver',
+        'coral', 'salmon', 'violet', 'khaki', 'lavender'
+    ];
+    let colorInterval;
+    let isDragging = false;
+    let isStuck = false;
+    let offsetX, offsetY;
+    let originalPosition = { left: target.style.left, top: target.style.top };
 
-// Добавляем обработчики событий на все элементы с классом "target"
-document.querySelectorAll(".target").forEach((element) => {
-  // Начало перетаскивания
-  element.addEventListener("mousedown", (event) => {
-    if (!isSticky) {
-      draggedElement = element;
-      const rect = element.getBoundingClientRect();
-      initialPosition = { top: rect.top, left: rect.left };
-      element.dataset.offsetX = event.clientX - rect.left;
-      element.dataset.offsetY = event.clientY - rect.top;
-    }
-  });
+    target.addEventListener('mousedown', (e) => {
+        if (isStuck) {
+            isStuck = false;
+            target.style.backgroundColor = '';
+            originalPosition = { left: target.style.left, top: target.style.top };
+        } else {
+            isDragging = true;
+            offsetX = e.clientX - target.getBoundingClientRect().left;
+            offsetY = e.clientY - target.getBoundingClientRect().top;
+            target.style.cursor = 'grabbing';
+        }
+    });
 
-  // Двойной клик для "приклеивания" элемента
-  element.addEventListener("dblclick", () => {
-    if (!isSticky) {
-      isSticky = true;
-      draggedElement = element;
-      element.style.backgroundColor = "blue"; // Меняем цвет
-    } else {
-      isSticky = false;
-      draggedElement.style.backgroundColor = "red"; // Возвращаем цвет
-      draggedElement = null;
-    }
-  });
-});
+    target.addEventListener('dblclick', () => {
+        isStuck = true;
+        colorInterval = setInterval(() => {
+            if (isStuck) {
+                target.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            }
+        }, 300);
+    });
 
-// Перемещение элемента вместе с курсором
-window.addEventListener("mousemove", (event) => {
-  if (draggedElement) {
-    const offsetX = draggedElement.dataset.offsetX || 0;
-    const offsetY = draggedElement.dataset.offsetY || 0;
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging || isStuck) {
+            target.style.position = 'absolute';
+            target.style.left = `${e.clientX - (isStuck ? offsetX : 0)}px`;
+            target.style.top = `${e.clientY - (isStuck ? offsetY : 0)}px`;
+        }
+    });
 
-    draggedElement.style.left = `${event.clientX - offsetX}px`;
-    draggedElement.style.top = `${event.clientY - offsetY}px`;
-  }
-});
+    document.addEventListener('mouseup', () => {
+        if (!isStuck) {
+            isDragging = false;
+            originalPosition = { left: target.style.left, top: target.style.top };
+            target.style.cursor = 'grab';
+        }
+    });
 
-// Остановка перетаскивания при отпускании кнопки мыши
-window.addEventListener("mouseup", () => {
-  if (!isSticky) {
-    draggedElement = null;
-  }
-});
 
-// Завершение всех действий по нажатию клавиши ESC
-window.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && draggedElement) {
-    if (isSticky) {
-      draggedElement.style.backgroundColor = "red"; // Возвращаем цвет
-      isSticky = false;
-    }
-    draggedElement.style.left = `${initialPosition.left}px`;
-    draggedElement.style.top = `${initialPosition.top}px`;
-    draggedElement = null;
-  }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && (isDragging || isStuck)) {
+            isDragging = false;
+            isStuck = false;
+            target.style.left = originalPosition.left;
+            target.style.top = originalPosition.top;
+            target.style.cursor = 'grab';
+            target.style.backgroundColor = '';
+        }
+    });
 });
